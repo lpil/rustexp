@@ -1,6 +1,6 @@
 @import url(//fonts.googleapis.com/css?family=Bitter);
 :root {
-  --color-primary: #4e2a8e;
+  --color-primary: #bf5700;
   --color-secondary: #fff8ed;
   --color-secondary-dk: #f6e4cc;
   --color-black: #333;
@@ -116,8 +116,8 @@ pre {
   color: var(--color-primary);
   font-size: 5em;
   line-height: 1em;
-  margin: 0;
-  text-shadow: var(--color-grey-lt) 2px 2px;
+  margin: 0 0 15px 0;
+  text-shadow: var(--color-grey) 2px 2px;
 }
 
 .footer {
@@ -132,11 +132,6 @@ pre {
 
 .footer a {
   white-space: nowrap;
-}
-
-.footer .b {
-  color: var(--color-bold);
-  font-weight: bold;
 }
 
 .results pre {
