@@ -1,15 +1,111 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
+    <meta charSet="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Rustexp</title>
-  </head>
+    <meta name="description" content="A Rust regular expression editor &amp; tester."/>
+    <meta name="author" content="Louis Pilfold"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" type="text/css" media="screen" charset="utf-8">
+    <link href="./main.css" rel="stylesheet"></head>
   <body>
-    <div class="form">
-      <input type="text" name="input" class="rs-pattern-input" placeholder="Regexp pattern">
-      <input type="text" name="input" class="rs-subject-input" placeholder="Regexp suject">
+
+    <div class="container">
+      <header class="header">
+        <h1>Rustexp</h1>
+        <h3>A Rust regular expression editor & tester</h3>
+      </header>
+
+      <main class="test" role="main">
+        <div>
+          <div class="inputs">
+            <div>
+              <label for="pattern" class="pattern-label">Regex</label>
+              <input name="pattern" class="rs-pattern-input pattern-input" autofocus="">
+            </div>
+
+            <div>
+              <label for="subject">Subject</label>
+              <textarea class="rs-subject-input" name="subject" rows="5"></textarea>
+
+              <label for="split" class="subject-split">Split on newlines?</label>
+              <input name="split" class="subject-split" type="checkbox">
+            </div>
+          </div>
+
+          <div class="results"><pre class="rs-output"></pre></div>
+        </div>
+      </main>
+
+
+      <div class="reference">
+        <p>Reference</p>
+        <ul>
+          <li><code>.</code> non-newline char</li>
+          <li><code>^</code> start of line</li>
+          <li><code>$</code> end of line</li>
+          <li><code>\b</code> word boundary</li>
+          <li><code>\b</code> word boundary</li>
+          <li><code>\A</code> start of subject</li>
+          <li><code>\z</code> end of subject</li>
+          <li><code>\d</code> decimal digit</li>
+          <li><code>\D</code> non-decimal digit</li>
+          <li><code>\s</code> whitespace</li>
+          <li><code>\S</code> non-whitespace</li>
+          <li><code>\w</code> word character</li>
+          <li><code>\W</code> non-word character</li>
+          <li><code>(a|z)</code> a or z</li>
+          <li><code>[az]</code> a or z</li>
+          <li><code>[^az]</code> not a or z</li>
+          <li><code>[a-z]</code> a through z</li>
+          <li><code>(foo)</code> capture foo</li>
+          <li><code>a?</code> 0 or 1 a</li>
+          <li><code>a*</code> 0 or more a</li>
+          <li><code>a+</code> 1 or more a</li>
+          <li><code>a{3}</code> 3 of a</li>
+          <li><code>a{3,}</code> 3 or more a</li>
+          <li><code>a{3,5}</code> 3 through 5 a</li>
+        </ul>
+        <p>Modifiers</p>
+        <ul>
+          <li><code>u</code> unicode</li>
+          <li><code>i</code> case insensitive</li>
+          <li><code>s</code> dot matches newline</li>
+          <li><code>m</code> multiline</li>
+          <li><code>x</code> whitespace ignored</li>
+          <li><code>f</code> start on first line</li>
+          <li><code>r</code> inverts greediness</li>
+        </ul>
+        <p class="reference__more">
+          For more information see the
+          <a href="https://doc.rust-lang.org/regex/regex/" target="_blank">
+            documentation for the `regex` crate
+          </a>.
+        </p>
+      </div>
     </div>
-    <pre class="rs-output"></pre>
+
+    <footer class="footer">
+      <p>
+        Rustexp is <a href="http://en.wikipedia.org/wiki/Free_software" target="_blank">
+        Free software</a>, available under the
+        <a href="https://gnu.org/licenses/agpl.html" target="_blank">GNU
+          AGPL3</a> licence.
+      </p>
+      <p>
+        The source code is freely available on
+        <a href="http://github.com/lpil/rustexp" target="_blank">GitHub</a>.
+        (Contributions welcome!)
+      </p>
+      <p>
+        Inspired by Michael Lovitt's excellent
+        <a href="http://rubular.com/" target="_blank">Rubular</a>.
+      </p>
+      <p>
+        Copyright © 2018 - Present
+        <a href="http://lpil.uk/" target="_blank">Louis Pilfold</a>. All Rights
+        Reserved.
+      </p>
+    </footer>
     <script src="rustexp.js"></script>
-  </body>
 </html>

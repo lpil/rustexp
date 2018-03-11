@@ -1,19 +1,20 @@
 extern crate regex;
-#[macro_use]
+// #[macro_use]
 extern crate stdweb;
 
 use regex::Regex;
 use std::fmt::Write;
+
 use stdweb::traits::*;
 use stdweb::unstable::TryInto;
 use stdweb::web::{document, HtmlElement};
-use stdweb::web::html_element::InputElement;
-
+use stdweb::web::html_element::{InputElement, TextAreaElement};
 use stdweb::web::event::InputEvent;
 
 fn main() {
     stdweb::initialize();
 
+    // Input containing pattern from which we construct the regex
     let pattern_input: InputElement = document()
         .query_selector(".rs-pattern-input")
         .unwrap()
@@ -21,13 +22,15 @@ fn main() {
         .try_into()
         .unwrap();
 
-    let subject_input: InputElement = document()
+    // Input containing string on which we run the regex
+    let subject_input: TextAreaElement = document()
         .query_selector(".rs-subject-input")
         .unwrap()
         .unwrap()
         .try_into()
         .unwrap();
 
+    // `pre` in which we render the results
     let output_pre: HtmlElement = document()
         .query_selector(".rs-output")
         .unwrap()
@@ -66,27 +69,30 @@ fn main() {
     stdweb::event_loop();
 }
 
-fn run_regex(pattern_input: InputElement, subject_input: InputElement, output_pre: HtmlElement) {
+fn run_regex(pattern_input: InputElement, subject_input: TextAreaElement, output_pre: HtmlElement) {
     let pattern: String = pattern_input.raw_value();
-    let subject: String = subject_input.raw_value();
+    let subject: String = subject_input.value();
 
+    // We don't want to do anything if there is no pattern.
+    // It will match anything
     if pattern == String::from("") {
         output_pre.set_text_content("");
         return;
     }
 
     let regex = match Regex::new(&pattern) {
-        Ok(re) => re,
+        // If the pattern doesn't compile into a regex
+        // render the error and halt.
         Err(e) => {
             output_pre.set_text_content(&format!("{:?}", e));
             return;
         }
+        Ok(re) => re,
     };
 
     let captures = regex.captures(&subject);
     let formatted = format_captures(captures);
     output_pre.set_text_content(&formatted);
-    console!(log, formatted);
 }
 
 fn format_captures(opt: Option<regex::Captures>) -> String {
@@ -102,6 +108,7 @@ fn format_captures(opt: Option<regex::Captures>) -> String {
                     Some(m) => write!(&mut buffer, "Some({:?}),\n", m.as_str()).unwrap(),
                 }
             }
+
             buffer.push_str("}))");
             buffer
         }
@@ -128,6 +135,27 @@ mod tests {
     0: Some("0Oobodo"),
     1: Some("ob"),
     2: Some("do"),
+}))"#;
+        assert_eq!(expected, format_captures(captures));
+    }
+
+    #[test]
+    fn test_format_captures_some_2() {
+        let regex = Regex::new("(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)").unwrap();
+        let subject = "1234567890";
+        let captures = regex.captures(subject);
+        let expected = r#"Some(Captures({
+    0: Some("1234567890"),
+    1: Some("1"),
+    2: Some("2"),
+    3: Some("3"),
+    4: Some("4"),
+    5: Some("5"),
+    6: Some("6"),
+    7: Some("7"),
+    8: Some("8"),
+    9: Some("9"),
+    10: Some("0"),
 }))"#;
         assert_eq!(expected, format_captures(captures));
     }
