@@ -121,10 +121,20 @@ mod tests {
     use regex::Regex;
 
     #[test]
-    fn test_format_captures_none() {
+    fn test_format_captures_no_matches() {
         let regex = Regex::new("foo").unwrap();
         let subject = "bar";
         assert_eq!("None", format_captures(regex, subject));
+    }
+
+    #[test]
+    fn test_format_captures_no_captures() {
+        let regex = Regex::new("foo").unwrap();
+        let subject = "foobar";
+        let expected = r#"Some(Captures({
+    0: Some("foo"),
+}))"#;
+        assert_eq!(expected, format_captures(regex, subject));
     }
 
     #[test]
