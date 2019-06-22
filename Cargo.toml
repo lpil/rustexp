@@ -5,4 +5,4 @@ authors = ["Louis Pilfold <louis@lpil.uk>"]
 
 [dependencies]
 stdweb = "0.4.1"
-regex = "0.2"
+regex = "1"
