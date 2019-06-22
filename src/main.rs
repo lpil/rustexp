@@ -90,12 +90,12 @@ fn run_regex(pattern_input: InputElement, subject_input: TextAreaElement, output
         Ok(re) => re,
     };
 
-    let captures = regex.captures(&subject);
-    let formatted = format_captures(captures);
+    let formatted = format_captures(regex, &subject);
     output_pre.set_text_content(&formatted);
 }
 
-fn format_captures(opt: Option<regex::Captures>) -> String {
+fn format_captures(regex: regex::Regex, subject: &str) -> String {
+    let opt = regex.captures(subject);
     match opt {
         None => String::from("None"),
         Some(captures) => {
@@ -122,28 +122,27 @@ mod tests {
 
     #[test]
     fn test_format_captures_none() {
-        let captures = None;
-        assert_eq!("None", format_captures(captures));
+        let regex = Regex::new("foo").unwrap();
+        let subject = "bar";
+        assert_eq!("None", format_captures(regex, subject));
     }
 
     #[test]
     fn test_format_captures_some() {
         let regex = Regex::new("..(..).(..)").unwrap();
         let subject = "0OobodoO0";
-        let captures = regex.captures(subject);
         let expected = r#"Some(Captures({
     0: Some("0Oobodo"),
     1: Some("ob"),
     2: Some("do"),
 }))"#;
-        assert_eq!(expected, format_captures(captures));
+        assert_eq!(expected, format_captures(regex, subject));
     }
 
     #[test]
     fn test_format_captures_some_2() {
         let regex = Regex::new("(.)(.)(.)(.)(.)(.)(.)(.)(.)(.)").unwrap();
         let subject = "1234567890";
-        let captures = regex.captures(subject);
         let expected = r#"Some(Captures({
     0: Some("1234567890"),
     1: Some("1"),
@@ -157,6 +156,6 @@ mod tests {
     9: Some("9"),
     10: Some("0"),
 }))"#;
-        assert_eq!(expected, format_captures(captures));
+        assert_eq!(expected, format_captures(regex, subject));
     }
 }
