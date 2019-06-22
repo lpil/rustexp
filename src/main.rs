@@ -95,23 +95,22 @@ fn run_regex(pattern_input: InputElement, subject_input: TextAreaElement, output
 }
 
 fn format_captures(regex: regex::Regex, subject: &str) -> String {
-    let opt = regex.captures(subject);
-    match opt {
-        None => String::from("None"),
-        Some(captures) => {
-            let mut buffer = String::from("Some(Captures({\n");
+    let mut buffer = String::new();
 
-            for (i, cap) in captures.iter().enumerate() {
-                write!(&mut buffer, "    {}: ", i).unwrap();
-                match cap {
-                    None => write!(&mut buffer, "None,\n",).unwrap(),
-                    Some(m) => write!(&mut buffer, "Some({:?}),\n", m.as_str()).unwrap(),
-                }
-            }
+    for captures in regex.captures_iter(subject) {
+        write!(&mut buffer, "Some(Captures({{\n").unwrap();
 
-            buffer.push_str("}))");
-            buffer
+        for (i, cap) in captures.iter().enumerate() {
+            write!(&mut buffer, "    {}: Some({:?}),\n", i, cap.unwrap().as_str()).unwrap();
         }
+
+        write!(&mut buffer, "}})),\n").unwrap();
+    }
+
+    if buffer == "" {
+        String::from("None")
+    } else {
+        buffer
     }
 }
 
@@ -133,7 +132,8 @@ mod tests {
         let subject = "foobar";
         let expected = r#"Some(Captures({
     0: Some("foo"),
-}))"#;
+})),
+"#;
         assert_eq!(expected, format_captures(regex, subject));
     }
 
@@ -145,7 +145,8 @@ mod tests {
     0: Some("0Oobodo"),
     1: Some("ob"),
     2: Some("do"),
-}))"#;
+})),
+"#;
         assert_eq!(expected, format_captures(regex, subject));
     }
 
@@ -165,7 +166,28 @@ mod tests {
     8: Some("8"),
     9: Some("9"),
     10: Some("0"),
-}))"#;
+})),
+"#;
+        assert_eq!(expected, format_captures(regex, subject));
+    }
+
+    #[test]
+    fn test_format_captures_all() {
+        let regex = Regex::new(r#"\b(.)at"#).unwrap();
+        let subject = "cat hat no pat no don't sit on that";
+        let expected = r#"Some(Captures({
+    0: Some("cat"),
+    1: Some("c"),
+})),
+Some(Captures({
+    0: Some("hat"),
+    1: Some("h"),
+})),
+Some(Captures({
+    0: Some("pat"),
+    1: Some("p"),
+})),
+"#;
         assert_eq!(expected, format_captures(regex, subject));
     }
 }
