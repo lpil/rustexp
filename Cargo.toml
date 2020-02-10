@@ -4,5 +4,5 @@ version = "0.1.0"
 authors = ["Louis Pilfold <louis@lpil.uk>"]
 
 [dependencies]
-stdweb = "0.4.1"
+stdweb = "0.4.11"
 regex = "1"

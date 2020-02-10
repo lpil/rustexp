@@ -6,7 +6,6 @@ server-side component at all!
 
 ```sh
 # Setup
-rustup install nightly
 cargo install -f cargo-web
 
 # Run dev server
