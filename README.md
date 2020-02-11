@@ -17,4 +17,10 @@ cargo web test --nodejs
 
 # Build binary
 cargo web build
+
+# Deploy
+make deploy
+git add .
+git commit -m 'Deploy'
+git push
 ```
