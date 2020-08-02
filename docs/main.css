@@ -10,16 +10,6 @@
   --color-bold: #d14;
 }
 
-main {
-  display: flex;
-  align-items:stretch;
-}
-.rs-output{
-  height: 100%;
-  min-height: 182px;
-}
-
-
 * {
   box-sizing: border-box;
 }
@@ -28,6 +18,15 @@ body {
   font-family: "Bitter", Georgia, "Times New Roman", Times, serif;
   font-size: 15px;
   line-height: 1.7em;
+}
+
+main {
+  display: flex;
+  align-items:stretch;
+}
+.rs-output{
+  height: 100%;
+  min-height: 182px;
 }
 
 h1,
@@ -112,7 +111,7 @@ pre {
   .results {
     padding: 12px 0 0 10px;
   }
-
+ 
 }
 
 .header {
@@ -174,7 +173,6 @@ pre {
   .reference li:nth-child(2n + 2) {
     margin: 0 0 0 11%;
   }
-
   main {
     flex-direction: column;
   }

@@ -7,9 +7,9 @@ use std::fmt::Write;
 
 use stdweb::traits::*;
 use stdweb::unstable::TryInto;
-use stdweb::web::event::InputEvent;
-use stdweb::web::html_element::TextAreaElement;
 use stdweb::web::{document, HtmlElement};
+use stdweb::web::html_element::{TextAreaElement};
+use stdweb::web::event::InputEvent;
 
 fn main() {
     stdweb::initialize();
@@ -69,11 +69,7 @@ fn main() {
     stdweb::event_loop();
 }
 
-fn run_regex(
-    pattern_input: TextAreaElement,
-    subject_input: TextAreaElement,
-    output_pre: HtmlElement,
-) {
+fn run_regex(pattern_input: TextAreaElement, subject_input: TextAreaElement, output_pre: HtmlElement) {
     let pattern: String = pattern_input.value();
     let subject: String = subject_input.value();
 
@@ -105,13 +101,7 @@ fn format_captures(regex: regex::Regex, subject: &str) -> String {
         write!(&mut buffer, "Some(Captures({{\n").unwrap();
 
         for (i, cap) in captures.iter().enumerate() {
-            write!(
-                &mut buffer,
-                "    {}: Some({:?}),\n",
-                i,
-                cap.unwrap().as_str()
-            )
-            .unwrap();
+            write!(&mut buffer, "    {}: Some({:?}),\n", i, cap.unwrap().as_str()).unwrap();
         }
 
         write!(&mut buffer, "}})),\n").unwrap();
