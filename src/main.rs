@@ -246,7 +246,14 @@ fn format_captures(regex: Regex, subject: &str) -> String {
         writeln!(&mut buffer, "Some(Captures({{").unwrap();
 
         for (i, cap) in captures.iter().enumerate() {
-            writeln!(&mut buffer, "    {}: Some({:?}),", i, cap.unwrap().as_str()).unwrap();
+            match cap {
+                Some(cap) => {
+                    writeln!(&mut buffer, "    {}: Some({:?}),", i, cap.as_str()).unwrap();
+                }
+                None => {
+                    writeln!(&mut buffer, "None").unwrap();
+                }
+            }
         }
 
         writeln!(&mut buffer, "}})),").unwrap();
