@@ -251,7 +251,7 @@ fn format_captures(regex: Regex, subject: &str) -> String {
                     writeln!(&mut buffer, "    {}: Some({:?}),", i, cap.as_str()).unwrap();
                 }
                 None => {
-                    writeln!(&mut buffer, "None").unwrap();
+                    writeln!(&mut buffer, "    {}: None,", i).unwrap();
                 }
             }
         }
