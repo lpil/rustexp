@@ -6,21 +6,17 @@ server-side component at all!
 
 ```sh
 # Setup
-cargo install -f cargo-web
+cargo install --locked trunk
+# Or see <https://trunkrs.dev/#install> for other alternatives
 
 # Run dev server
-cargo web start --auto-reload
+trunk serve
 
 # Run tests
 cargo test
-cargo web test --nodejs
 
 # Build binary
-cargo web build
-
-# Deploy
-make deploy
-git add .
-git commit -m 'Deploy'
-git push
+trunk build --release
 ```
+
+Deploy contents of `./dist` to your location of choice.
