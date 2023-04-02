@@ -1,3 +1,135 @@
+//
+// Let's aggressively deny every lint that isn't already deny.
+//
+#![deny(absolute_paths_not_starting_with_crate)]
+#![deny(box_pointers)]
+#![deny(elided_lifetimes_in_paths)]
+#![deny(explicit_outlives_requirements)]
+#![deny(keyword_idents)]
+#![deny(let_underscore_drop)]
+#![deny(macro_use_extern_crate)]
+#![deny(meta_variable_misuse)]
+#![deny(missing_abi)]
+#![deny(missing_copy_implementations)]
+#![deny(missing_debug_implementations)]
+#![deny(non_ascii_idents)]
+#![deny(noop_method_call)]
+#![deny(pointer_structural_match)]
+#![deny(rust_2021_incompatible_closure_captures)]
+#![deny(rust_2021_incompatible_or_patterns)]
+#![deny(rust_2021_prefixes_incompatible_syntax)]
+#![deny(rust_2021_prelude_collisions)]
+#![deny(single_use_lifetimes)]
+#![deny(trivial_casts)]
+#![deny(trivial_numeric_casts)]
+#![deny(unreachable_pub)]
+#![deny(unsafe_code)]
+#![deny(unsafe_op_in_unsafe_fn)]
+#![deny(unstable_features)]
+#![deny(unused_crate_dependencies)]
+#![deny(unused_extern_crates)]
+#![deny(unused_import_braces)]
+#![deny(unused_lifetimes)]
+#![deny(unused_macro_rules)]
+#![deny(unused_qualifications)]
+#![deny(unused_results)]
+#![deny(unused_tuple_struct_fields)]
+#![deny(variant_size_differences)]
+#![deny(anonymous_parameters)]
+#![deny(array_into_iter)]
+#![deny(asm_sub_register)]
+#![deny(bad_asm_style)]
+#![deny(bare_trait_objects)]
+#![deny(break_with_label_and_loop)]
+#![deny(clashing_extern_declarations)]
+#![deny(coherence_leak_check)]
+#![deny(confusable_idents)]
+#![deny(const_evaluatable_unchecked)]
+#![deny(const_item_mutation)]
+#![deny(dead_code)]
+#![deny(deprecated)]
+#![deny(deprecated_where_clause_location)]
+#![deny(deref_into_dyn_supertrait)]
+#![deny(deref_nullptr)]
+#![deny(drop_bounds)]
+#![deny(duplicate_macro_attributes)]
+#![deny(dyn_drop)]
+#![deny(ellipsis_inclusive_range_patterns)]
+#![deny(exported_private_dependencies)]
+#![deny(for_loops_over_fallibles)]
+#![deny(forbidden_lint_groups)]
+#![deny(function_item_references)]
+#![deny(illegal_floating_point_literal_pattern)]
+#![deny(improper_ctypes)]
+#![deny(improper_ctypes_definitions)]
+#![deny(incomplete_features)]
+#![deny(indirect_structural_match)]
+#![deny(inline_no_sanitize)]
+#![deny(invalid_doc_attributes)]
+#![deny(invalid_value)]
+#![deny(irrefutable_let_patterns)]
+#![deny(large_assignments)]
+#![deny(late_bound_lifetime_arguments)]
+#![deny(legacy_derive_helpers)]
+#![deny(mixed_script_confusables)]
+#![deny(named_arguments_used_positionally)]
+#![deny(no_mangle_generic_items)]
+#![deny(non_camel_case_types)]
+#![deny(non_fmt_panics)]
+#![deny(non_shorthand_field_patterns)]
+#![deny(non_snake_case)]
+#![deny(non_upper_case_globals)]
+#![deny(nontrivial_structural_match)]
+#![deny(opaque_hidden_inferred_bound)]
+#![deny(overlapping_range_endpoints)]
+#![deny(path_statements)]
+#![deny(private_in_public)]
+#![deny(redundant_semicolons)]
+#![deny(renamed_and_removed_lints)]
+#![deny(repr_transparent_external_private_fields)]
+#![deny(semicolon_in_expressions_from_macros)]
+#![deny(special_module_name)]
+#![deny(stable_features)]
+#![deny(suspicious_auto_trait_impls)]
+#![deny(temporary_cstring_as_ptr)]
+#![deny(trivial_bounds)]
+#![deny(type_alias_bounds)]
+#![deny(tyvar_behind_raw_pointer)]
+#![deny(uncommon_codepoints)]
+#![deny(unconditional_recursion)]
+#![deny(unexpected_cfgs)]
+#![deny(ungated_async_fn_track_caller)]
+#![deny(uninhabited_static)]
+#![deny(unknown_lints)]
+#![deny(unnameable_test_items)]
+#![deny(unreachable_code)]
+#![deny(unreachable_patterns)]
+#![deny(unstable_name_collisions)]
+#![deny(unstable_syntax_pre_expansion)]
+#![deny(unsupported_calling_conventions)]
+#![deny(unused_allocation)]
+#![deny(unused_assignments)]
+#![deny(unused_attributes)]
+#![deny(unused_braces)]
+#![deny(unused_comparisons)]
+#![deny(unused_doc_comments)]
+#![deny(unused_features)]
+#![deny(unused_imports)]
+#![deny(unused_labels)]
+#![deny(unused_macros)]
+#![deny(unused_must_use)]
+#![deny(unused_mut)]
+#![deny(unused_parens)]
+#![deny(unused_unsafe)]
+#![deny(unused_variables)]
+#![deny(warnings)]
+#![deny(where_clauses_object_safety)]
+#![deny(while_true)]
+//
+// And also every clippy lint
+//
+#![deny(clippy::all)]
+
 use regex::Regex;
 use std::fmt::Write;
 
@@ -32,7 +164,6 @@ fn main() {
     let input_event_closure = Closure::<dyn FnMut(_)>::new({
         let pattern_input = pattern_input.clone();
         let subject_input = subject_input.clone();
-        let output_pre = output_pre.clone();
 
         move |_event: InputEvent| {
             run_regex(
@@ -61,7 +192,7 @@ fn run_regex(
 
     // We don't want to do anything if there is no pattern.
     // It will match anything
-    if pattern == String::from("") {
+    if pattern.is_empty() {
         output_pre.set_text_content(Some(""));
         return;
     }
@@ -80,30 +211,23 @@ fn run_regex(
     output_pre.set_text_content(Some(&formatted));
 }
 
-fn format_captures(regex: regex::Regex, subject: &str) -> String {
+fn format_captures(regex: Regex, subject: &str) -> String {
     let mut buffer = String::new();
 
     for captures in regex.captures_iter(subject) {
-        write!(&mut buffer, "Some(Captures({{\n").unwrap();
+        writeln!(&mut buffer, "Some(Captures({{").unwrap();
 
         for (i, cap) in captures.iter().enumerate() {
-            write!(
-                &mut buffer,
-                "    {}: Some({:?}),\n",
-                i,
-                cap.unwrap().as_str()
-            )
-            .unwrap();
+            writeln!(&mut buffer, "    {}: Some({:?}),", i, cap.unwrap().as_str()).unwrap();
         }
 
-        write!(&mut buffer, "}})),\n").unwrap();
+        writeln!(&mut buffer, "}})),").unwrap();
     }
 
-    if buffer == "" {
-        String::from("None")
-    } else {
-        buffer
+    if buffer.is_empty() {
+        buffer.push_str("None")
     }
+    buffer
 }
 
 pub fn document() -> web_sys::Document {
