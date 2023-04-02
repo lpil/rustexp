@@ -1,33 +1,24 @@
-extern crate regex;
-// #[macro_use]
-extern crate stdweb;
-
 use regex::Regex;
 use std::fmt::Write;
 
-use stdweb::traits::*;
-use stdweb::unstable::TryInto;
-use stdweb::web::{document, HtmlElement};
-use stdweb::web::html_element::{TextAreaElement};
-use stdweb::web::event::InputEvent;
+use wasm_bindgen::prelude::*;
+use web_sys::{HtmlElement, HtmlTextAreaElement, InputEvent};
 
 fn main() {
-    stdweb::initialize();
-
     // Input containing pattern from which we construct the regex
-    let pattern_input: TextAreaElement = document()
+    let pattern_input: HtmlTextAreaElement = document()
         .query_selector(".rs-pattern-input")
         .unwrap()
         .unwrap()
-        .try_into()
+        .dyn_into()
         .unwrap();
 
     // Input containing string on which we run the regex
-    let subject_input: TextAreaElement = document()
+    let subject_input: HtmlTextAreaElement = document()
         .query_selector(".rs-subject-input")
         .unwrap()
         .unwrap()
-        .try_into()
+        .dyn_into()
         .unwrap();
 
     // `pre` in which we render the results
@@ -35,10 +26,10 @@ fn main() {
         .query_selector(".rs-output")
         .unwrap()
         .unwrap()
-        .try_into()
+        .dyn_into()
         .unwrap();
 
-    pattern_input.add_event_listener({
+    let input_event_closure = Closure::<dyn FnMut(_)>::new({
         let pattern_input = pattern_input.clone();
         let subject_input = subject_input.clone();
         let output_pre = output_pre.clone();
@@ -51,32 +42,27 @@ fn main() {
             );
         }
     });
-
-    subject_input.add_event_listener({
-        let pattern_input = pattern_input.clone();
-        let subject_input = subject_input.clone();
-        let output_pre = output_pre.clone();
-
-        move |_event: InputEvent| {
-            run_regex(
-                pattern_input.clone(),
-                subject_input.clone(),
-                output_pre.clone(),
-            );
-        }
-    });
-
-    stdweb::event_loop();
+    pattern_input
+        .add_event_listener_with_callback("input", input_event_closure.as_ref().unchecked_ref())
+        .unwrap();
+    subject_input
+        .add_event_listener_with_callback("input", input_event_closure.as_ref().unchecked_ref())
+        .unwrap();
+    input_event_closure.forget();
 }
 
-fn run_regex(pattern_input: TextAreaElement, subject_input: TextAreaElement, output_pre: HtmlElement) {
+fn run_regex(
+    pattern_input: HtmlTextAreaElement,
+    subject_input: HtmlTextAreaElement,
+    output_pre: HtmlElement,
+) {
     let pattern: String = pattern_input.value();
     let subject: String = subject_input.value();
 
     // We don't want to do anything if there is no pattern.
     // It will match anything
     if pattern == String::from("") {
-        output_pre.set_text_content("");
+        output_pre.set_text_content(Some(""));
         return;
     }
 
@@ -84,14 +70,14 @@ fn run_regex(pattern_input: TextAreaElement, subject_input: TextAreaElement, out
         // If the pattern doesn't compile into a regex
         // render the error and halt.
         Err(e) => {
-            output_pre.set_text_content(&format!("{:?}", e));
+            output_pre.set_text_content(Some(&format!("{:?}", e)));
             return;
         }
         Ok(re) => re,
     };
 
     let formatted = format_captures(regex, &subject);
-    output_pre.set_text_content(&formatted);
+    output_pre.set_text_content(Some(&formatted));
 }
 
 fn format_captures(regex: regex::Regex, subject: &str) -> String {
@@ -101,7 +87,13 @@ fn format_captures(regex: regex::Regex, subject: &str) -> String {
         write!(&mut buffer, "Some(Captures({{\n").unwrap();
 
         for (i, cap) in captures.iter().enumerate() {
-            write!(&mut buffer, "    {}: Some({:?}),\n", i, cap.unwrap().as_str()).unwrap();
+            write!(
+                &mut buffer,
+                "    {}: Some({:?}),\n",
+                i,
+                cap.unwrap().as_str()
+            )
+            .unwrap();
         }
 
         write!(&mut buffer, "}})),\n").unwrap();
@@ -112,6 +104,13 @@ fn format_captures(regex: regex::Regex, subject: &str) -> String {
     } else {
         buffer
     }
+}
+
+pub fn document() -> web_sys::Document {
+    web_sys::window()
+        .expect_throw("Can't find the global Window")
+        .document()
+        .expect_throw("Can't find document")
 }
 
 #[cfg(test)]

@@ -2,7 +2,15 @@
 name = "rustexp"
 version = "0.1.0"
 authors = ["Louis Pilfold <louis@lpil.uk>"]
+edition = "2021"
 
 [dependencies]
-stdweb = "0.4.11"
 regex = "~1.3.9"
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3", features = [
+    "Document",
+    "HtmlElement",
+    "HtmlTextAreaElement",
+    "InputEvent",
+    "Window",
+] }
