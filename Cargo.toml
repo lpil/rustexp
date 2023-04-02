@@ -14,3 +14,7 @@ web-sys = { version = "0.3", features = [
     "InputEvent",
     "Window",
 ] }
+
+[profile.release]
+lto = true
+opt-level = 's'
