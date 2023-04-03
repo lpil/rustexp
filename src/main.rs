@@ -138,28 +138,15 @@ use web_sys::{HtmlElement, HtmlTextAreaElement, InputEvent};
 
 fn main() {
     // Input containing pattern from which we construct the regex
-    let pattern_input: HtmlTextAreaElement = document()
-        .query_selector(".rs-pattern-input")
-        .unwrap()
-        .unwrap()
-        .dyn_into()
-        .unwrap();
+    let pattern_input: HtmlTextAreaElement =
+        get_element_by_query_selector(".rs-pattern-input").unwrap();
 
     // Input containing string on which we run the regex
-    let subject_input: HtmlTextAreaElement = document()
-        .query_selector(".rs-subject-input")
-        .unwrap()
-        .unwrap()
-        .dyn_into()
-        .unwrap();
+    let subject_input: HtmlTextAreaElement =
+        get_element_by_query_selector(".rs-subject-input").unwrap();
 
     // `pre` in which we render the results
-    let output_pre: HtmlElement = document()
-        .query_selector(".rs-output")
-        .unwrap()
-        .unwrap()
-        .dyn_into()
-        .unwrap();
+    let output_pre: HtmlElement = get_element_by_query_selector(".rs-output").unwrap();
 
     let input_event_closure = Closure::<dyn FnMut(_)>::new({
         let pattern_input = pattern_input.clone();
@@ -230,11 +217,15 @@ fn format_captures(regex: Regex, subject: &str) -> String {
     buffer
 }
 
-pub fn document() -> web_sys::Document {
+fn document() -> web_sys::Document {
     web_sys::window()
         .expect_throw("Can't find the global Window")
         .document()
         .expect_throw("Can't find document")
+}
+
+fn get_element_by_query_selector<T: JsCast>(selector: &str) -> Option<T> {
+    document().query_selector(selector).ok()??.dyn_into().ok()
 }
 
 #[cfg(test)]
