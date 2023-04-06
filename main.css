@@ -209,3 +209,13 @@ textarea {
     padding: 8px 10px;
     resize: vertical;
 }
+
+body.regex .regex,
+body.fancy-regex .regex-fancy {
+    display: block;
+}
+
+body.fancy-regex .regex,
+body.regex .regex-fancy {
+    display: none;
+}

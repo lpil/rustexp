@@ -130,11 +130,12 @@
 //
 #![deny(clippy::all)]
 
+use fancy_regex::Regex as FancyRegex;
 use regex::Regex;
 use std::fmt::Write;
 
 use wasm_bindgen::prelude::*;
-use web_sys::{HtmlElement, HtmlTextAreaElement, InputEvent};
+use web_sys::{Event, HtmlElement, HtmlInputElement, HtmlTextAreaElement};
 
 fn main() {
     // Input containing pattern from which we construct the regex
@@ -148,15 +149,26 @@ fn main() {
     // `pre` in which we render the results
     let output_pre: HtmlElement = get_element_by_query_selector(".rs-output").unwrap();
 
+    // `input` for choosing between `regex` and `fancy-regex`
+    let fancy_regex: HtmlInputElement = get_element_by_query_selector(".fancy-regex").unwrap();
+
+    // `body` element
+    let body: HtmlElement = get_element_by_query_selector("body").unwrap();
+
     let input_event_closure = Closure::<dyn FnMut(_)>::new({
         let pattern_input = pattern_input.clone();
         let subject_input = subject_input.clone();
+        let output_pre = output_pre.clone();
+        let fancy_regex = fancy_regex.clone();
+        let body = body.clone();
 
-        move |_event: InputEvent| {
+        move |_: Event| {
             run_regex(
                 pattern_input.clone(),
                 subject_input.clone(),
                 output_pre.clone(),
+                fancy_regex.clone(),
+                body.clone(),
             );
         }
     });
@@ -166,16 +178,31 @@ fn main() {
     subject_input
         .add_event_listener_with_callback("input", input_event_closure.as_ref().unchecked_ref())
         .unwrap();
+    fancy_regex
+        .add_event_listener_with_callback("change", input_event_closure.as_ref().unchecked_ref())
+        .unwrap();
+
     input_event_closure.forget();
+
+    run_regex(pattern_input, subject_input, output_pre, fancy_regex, body);
 }
 
 fn run_regex(
     pattern_input: HtmlTextAreaElement,
     subject_input: HtmlTextAreaElement,
     output_pre: HtmlElement,
+    fancy_regex: HtmlInputElement,
+    body: HtmlElement,
 ) {
     let pattern: String = pattern_input.value();
     let subject: String = subject_input.value();
+    let use_fancy_regex = fancy_regex.checked();
+
+    body.set_class_name(if use_fancy_regex {
+        "fancy-regex"
+    } else {
+        "regex"
+    });
 
     // We don't want to do anything if there is no pattern.
     // It will match anything
@@ -184,17 +211,31 @@ fn run_regex(
         return;
     }
 
-    let regex = match Regex::new(&pattern) {
-        // If the pattern doesn't compile into a regex
-        // render the error and halt.
-        Err(e) => {
-            output_pre.set_text_content(Some(&format!("{:?}", e)));
-            return;
-        }
-        Ok(re) => re,
-    };
+    let formatted = if !use_fancy_regex {
+        let regex = match Regex::new(&pattern) {
+            // If the pattern doesn't compile into a regex
+            // render the error and halt.
+            Err(e) => {
+                output_pre.set_text_content(Some(&format!("{:?}", e)));
+                return;
+            }
+            Ok(re) => re,
+        };
 
-    let formatted = format_captures(regex, &subject);
+        format_captures(regex, &subject)
+    } else {
+        let regex = match FancyRegex::new(&pattern) {
+            // If the pattern doesn't compile into a regex
+            // render the error and halt.
+            Err(e) => {
+                output_pre.set_text_content(Some(&format!("{:?}", e)));
+                return;
+            }
+            Ok(re) => re,
+        };
+
+        format_captures_fancy(regex, &subject)
+    };
     output_pre.set_text_content(Some(&formatted));
 }
 
@@ -206,6 +247,27 @@ fn format_captures(regex: Regex, subject: &str) -> String {
 
         for (i, cap) in captures.iter().enumerate() {
             writeln!(&mut buffer, "    {}: Some({:?}),", i, cap.unwrap().as_str()).unwrap();
+        }
+
+        writeln!(&mut buffer, "}})),").unwrap();
+    }
+
+    if buffer.is_empty() {
+        buffer.push_str("None")
+    }
+    buffer
+}
+
+fn format_captures_fancy(regex: FancyRegex, subject: &str) -> String {
+    let mut buffer = String::new();
+
+    for captures in regex.captures_iter(subject) {
+        writeln!(&mut buffer, "Some(Captures({{").unwrap();
+
+        for cap in captures.iter() {
+            for (i, c) in cap.iter().flatten().enumerate() {
+                writeln!(&mut buffer, "    {}: Some({:?}),", i, c.as_str()).unwrap();
+            }
         }
 
         writeln!(&mut buffer, "}})),").unwrap();

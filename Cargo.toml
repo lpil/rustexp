@@ -5,13 +5,15 @@ authors = ["Louis Pilfold <louis@lpil.uk>"]
 edition = "2021"
 
 [dependencies]
+fancy-regex = "0.11"
 regex = "1.7"
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = [
     "Document",
+    "Event",
     "HtmlElement",
+    "HtmlInputElement",
     "HtmlTextAreaElement",
-    "InputEvent",
     "Window",
 ] }
 
