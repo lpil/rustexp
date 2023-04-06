@@ -38,11 +38,12 @@ jobs:
               run: wget -qO- https://github.com/thedodd/trunk/releases/download/${TRUNK_VERSION}/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
             - name: Build site
-              run: ./trunk build --release --public-url rustexp
+              run: ./trunk build --release
 
             - name: Finalize dist directory
               run: |
                   touch dist/.nojekyll
+                  echo -n "rustexp.alexanderschroeder.net" > dist/CNAME
 
             - name: Deploy
               uses: JamesIves/github-pages-deploy-action@v4
