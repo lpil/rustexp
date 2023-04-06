@@ -43,7 +43,7 @@ jobs:
             - name: Finalize dist directory
               run: |
                   touch dist/.nojekyll
-                  echo -n "rustexp.alexanderschroeder.net" > dist/CNAME
+                  echo -n "${{ vars.CNAME }}" > dist/CNAME
 
             - name: Deploy
               uses: JamesIves/github-pages-deploy-action@v4
