@@ -32,6 +32,9 @@ if (window.location.href.match(/^http:\/\/rustexp.lpil.uk/)) {
               <label for="subject">Subject</label>
               <textarea class="rs-subject-input" name="subject" rows="5"></textarea>
 
+              <label for="fancy" class="subject-split">Use <code>fancy-regex</code>.</label>
+              <input name="fancy" class="subject-split fancy-regex" type="checkbox">
+
               <!-- The functionality for this isn't actually implemented
               <label for="split" class="subject-split">Split on newlines?</label>
               <input name="split" class="subject-split" type="checkbox">
@@ -78,15 +81,57 @@ if (window.location.href.match(/^http:\/\/rustexp.lpil.uk/)) {
           <li><code>s</code> dot matches newline</li>
           <li><code>m</code> multiline</li>
           <li><code>x</code> whitespace ignored</li>
-          <li><code>f</code> start on first line</li>
-          <li><code>r</code> inverts greediness</li>
         </ul>
-        <p class="reference__more">
-          For more information see the
-          <a href="https://docs.rs/regex/" target="_blank">
-            documentation for the regex crate
-          </a>.
-        </p>
+        <div class="regex">
+          <p class="reference__more">
+            For more information see the
+            <a href="https://docs.rs/regex/" target="_blank">
+              documentation for the regex crate
+            </a>.
+          </p>
+        </div>
+        <div class="regex-fancy">
+          <p>Additional escapes</p>
+          <ul>
+            <li><code>\h</code> hex digit (<code>[0-9A-Fa-f]</code>)</li>
+            <li><code>\H</code> not hex digit (<code>[^0-9A-Fa-f]</code>)</li>
+            <li><code>\e</code> escape control character <!--(<code>\x1B</code>)--></li>
+            <li><code>\K</code> keep text out of match</li>
+            <li><code>\G</code> anchor to previous match</li>
+          </ul>
+          <p>Capture groups and backreferences</p>
+          <ul>
+            <li><code>\1</code> match first capture group</li>
+            <li><code>\2</code> match second capture group</li>
+            <li><code>\{N}</code> match Nth capture group</li>
+            <li><code style="width: 100px;">(?&lt;name&gt; exp)</code> capture group named <i>name</i></li>
+            <li><code>\k&lt;name&gt;</code> match capture group <i>name</i></li>
+          </ul>
+          <p>Lookaround</p>
+          <ul>
+            <li><code>(?=exp)</code> look-head for <i>exp</i></li>
+            <li><code>(?!exp)</code> negative look-head for <i>exp</i></li>
+            <li><code>(?&lt;=exp)</code> look-behind for <i>exp</i></li>
+            <li><code>(?&lt;!exp)</code> negative look-behind for <i>exp</i></li>
+          </ul>
+          <p>Atomic groups</p>
+          <ul>
+            <li><code>(?&gt;exp)</code> no backtracking in <i>exp</i></li>
+          </ul>
+          <p>Conditions</p>
+          <ul>
+            <li><code>(?(1))</code> continue if first capture group matched</li>
+            <li><code style="width: 90px;">(?(&lt;name&gt;))</code> continue if capture group <i>name</i> matched</li>
+            <li><code style="width: 120px;">(?(1)true|false)</code> if the first capture group matched then execute the <code>true</code> regex expression, else execute <code>false</code></li>
+            <li><code style="width: 180px;">(?(condition)true|false)</code> if the condition matches then execute the <code>true</code> regex expression, else execute <code>false</code></li>
+          </ul>
+          <p class="reference__more">
+            For more information see the
+            <a href="https://docs.rs/fancy-regex/" target="_blank">
+              documentation for the fancy-regex crate
+            </a>.
+          </p>
+        </div>
       </div>
     </div>
 
