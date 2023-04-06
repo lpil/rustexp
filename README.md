@@ -1,7 +1,8 @@
 # Rustexp
 
 A Rust regular expression editor and tester. It compiles to web assembly and
-is served from from GitHub pages (from the docs directory). There's no
+is served from from GitHub pages (built and deployed by
+[a GitHub action](https://github.com/alexschrod/rustexp/actions)). There's no
 server-side component at all!
 
 ```sh
