@@ -22,9 +22,9 @@ body {
 
 main {
   display: flex;
-  align-items:stretch;
+  align-items: stretch;
 }
-.rs-output{
+.rs-output {
   height: 100%;
   min-height: 182px;
 }
@@ -111,7 +111,6 @@ pre {
   .results {
     padding: 12px 0 0 10px;
   }
- 
 }
 
 .header {
@@ -156,39 +155,38 @@ pre {
   color: var(--color-bold);
 }
 
+main {
+  flex-direction: column;
+}
+
+@media (min-width: 800px) {
+  main {
+    flex-direction: row;
+  }
+}
+
 .reference ul {
   padding: 0;
+  display: grid;
+  grid-template-columns: 100%;
+  gap: 0.5rem;
+}
+@media (min-width: 520px) and (max-width: 799px) {
+  .reference ul {
+    grid-template-columns: 50% 50%;
+  }
+}
+@media (min-width: 800px) {
+  .reference ul {
+    grid-template-columns: 33% 33% 33%;
+  }
 }
 
 .reference li {
   list-style-type: none;
-  white-space: nowrap;
 }
 
-@media (min-width: 520px) and (max-width: 799px) {
-  .reference li {
-    display: inline-block;
-    width: 40%;
-  }
-  .reference li:nth-child(2n + 2) {
-    margin: 0 0 0 11%;
-  }
-  main {
-    flex-direction: column;
-  }
-}
-
-@media (min-width: 800px) {
-  .reference li {
-    display: inline-block;
-    width: 28%;
-  }
-  .reference li:nth-child(3n + 2) {
-    margin: 0 6.5%;
-  }
-}
-
-.reference code {
+.reference li > code:first-child {
   display: inline-block;
   margin-right: 5px;
   text-align: center;
