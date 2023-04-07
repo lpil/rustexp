@@ -16,7 +16,7 @@ trunk serve
 # Run tests
 cargo test
 
-# Build
+# Build release binary
 trunk build --release
 ```
 
