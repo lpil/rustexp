@@ -1,0 +1,203 @@
+<!DOCTYPE html><html lang="en-us"><head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Rustexp</title>
+        <meta name="description" content="A Rust regular expression editor &amp; tester.">
+        <meta name="author" content="Louis Pilfold">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="/main-26383d1c2e1805cd.css">
+        <link rel="icon" href="/favicon-972e82e50fe9a0e7.ico">
+    
+<link rel="preload" href="/rustexp-4d0e7de4566328cb_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/rustexp-4d0e7de4566328cb.js"></head>
+    <body>
+        <div class="container">
+            <header class="header">
+                <h1>Rustexp</h1>
+                <h3>A Rust regular expression editor &amp; tester</h3>
+            </header>
+
+            <main class="test" role="main">
+                <div class="inputs">
+                    <div>
+                        <label for="pattern" class="pattern-label">Regex</label>
+                        <textarea name="pattern" class="rs-pattern-input pattern-input" autofocus="" rows="1"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="subject">Subject</label>
+                        <textarea class="rs-subject-input" name="subject" rows="5"></textarea>
+
+                        <label for="fancy" class="subject-split">Use <code>fancy-regex</code>.</label>
+                        <input name="fancy" class="subject-split fancy-regex" type="checkbox">
+
+                        <!-- The functionality for this isn't actually implemented
+              <label for="split" class="subject-split">Split on newlines?</label>
+              <input name="split" class="subject-split" type="checkbox">
+              -->
+                    </div>
+                </div>
+
+                <div class="results"><pre class="rs-output"></pre></div>
+            </main>
+
+            <div class="reference">
+                <p>Reference</p>
+                <ul>
+                    <li><code>.</code> non-newline char</li>
+                    <li><code>^</code> start of line</li>
+                    <li><code>$</code> end of line</li>
+                    <li><code>\b</code> word boundary</li>
+                    <li><code>\B</code> non-word boundary</li>
+                    <li><code>\A</code> start of subject</li>
+                    <li><code>\z</code> end of subject</li>
+                    <li><code>\d</code> decimal digit</li>
+                    <li><code>\D</code> non-decimal digit</li>
+                    <li><code>\s</code> whitespace</li>
+                    <li><code>\S</code> non-whitespace</li>
+                    <li><code>\w</code> word character</li>
+                    <li><code>\W</code> non-word character</li>
+                    <li><code>(a|z)</code> a or z</li>
+                    <li><code>[az]</code> a or z</li>
+                    <li><code>[^az]</code> not a or z</li>
+                    <li><code>[a-z]</code> a through z</li>
+                    <li><code>(foo)</code> capture foo</li>
+                    <li><code>a?</code> 0 or 1 a</li>
+                    <li><code>a*</code> 0 or more a</li>
+                    <li><code>a+</code> 1 or more a</li>
+                    <li><code>a{3}</code> 3 of a</li>
+                    <li><code>a{3,}</code> 3 or more a</li>
+                    <li><code>a{3,5}</code> 3 through 5 a</li>
+                </ul>
+                <p>
+                    Modifiers (enable: <code>(?a)</code>, disable:
+                    <code>(?-a)</code>)
+                </p>
+                <ul>
+                    <li><code>u</code> unicode</li>
+                    <li><code>i</code> case insensitive</li>
+                    <li><code>s</code> dot matches newline</li>
+                    <li><code>m</code> multiline</li>
+                    <li><code>x</code> whitespace ignored</li>
+                </ul>
+                <div class="regex">
+                    <p class="reference__more">
+                        For more information see the
+                        <a href="https://docs.rs/regex/" target="_blank">
+                            documentation for the regex crate </a>.
+                    </p>
+                </div>
+                <div class="regex-fancy">
+                    <p>Additional escapes</p>
+                    <ul>
+                        <li>
+                            <code>\h</code> hex digit (<code>[0-9A-Fa-f]</code>)
+                        </li>
+                        <li>
+                            <code>\H</code> not hex digit
+                            (<code>[^0-9A-Fa-f]</code>)
+                        </li>
+                        <li>
+                            <code>\e</code> escape control character
+                            <!--(<code>\x1B</code>)-->
+                        </li>
+                        <li><code>\K</code> keep text out of match</li>
+                        <li><code>\G</code> anchor to previous match</li>
+                    </ul>
+                    <p>Capture groups and backreferences</p>
+                    <ul>
+                        <li><code>\1</code> match first capture group</li>
+                        <li><code>\2</code> match second capture group</li>
+                        <li><code>\{N}</code> match Nth capture group</li>
+                        <li>
+                            <code style="width: 100px">(?&lt;name&gt; exp)</code>
+                            capture group named <i>name</i>
+                        </li>
+                        <li>
+                            <code>\k&lt;name&gt;</code> match capture group
+                            <i>name</i>
+                        </li>
+                    </ul>
+                    <p>Lookaround</p>
+                    <ul>
+                        <li><code>(?=exp)</code> look-head for <i>exp</i></li>
+                        <li>
+                            <code>(?!exp)</code> negative look-head for
+                            <i>exp</i>
+                        </li>
+                        <li>
+                            <code>(?&lt;=exp)</code> look-behind for <i>exp</i>
+                        </li>
+                        <li>
+                            <code>(?&lt;!exp)</code> negative look-behind for
+                            <i>exp</i>
+                        </li>
+                    </ul>
+                    <p>Atomic groups</p>
+                    <ul>
+                        <li>
+                            <code>(?&gt;exp)</code> no backtracking in
+                            <i>exp</i>
+                        </li>
+                    </ul>
+                    <p>Conditions</p>
+                    <ul>
+                        <li>
+                            <code>(?(1))</code> continue if first capture group
+                            matched
+                        </li>
+                        <li>
+                            <code style="width: 90px">(?(&lt;name&gt;))</code>
+                            continue if capture group <i>name</i> matched
+                        </li>
+                        <li>
+                            <code style="width: 120px">(?(1)true|false)</code>
+                            if the first capture group matched then execute the
+                            <code>true</code> regex expression, else execute
+                            <code>false</code>
+                        </li>
+                        <li>
+                            <code style="width: 180px">(?(condition)true|false)</code>
+                            if the condition matches then execute the
+                            <code>true</code> regex expression, else execute
+                            <code>false</code>
+                        </li>
+                    </ul>
+                    <p class="reference__more">
+                        For more information see the
+                        <a href="https://docs.rs/fancy-regex/" target="_blank">
+                            documentation for the fancy-regex crate </a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>
+                Rustexp is
+                <a href="http://en.wikipedia.org/wiki/Free_software" target="_blank">
+                    Free software</a>, available under the
+                <a href="https://gnu.org/licenses/agpl.html" target="_blank">GNU AGPL3</a>
+                licence.
+            </p>
+            <p>
+                The source code is freely available on
+                <a href="http://github.com/lpil/rustexp" target="_blank">GitHub</a>. (Contributions welcome!)
+            </p>
+            <p>
+                Inspired by Michael Lovitt's excellent
+                <a href="http://rubular.com/" target="_blank">Rubular</a>.
+            </p>
+            <p>
+                Created by
+                <a href="http://lpil.uk/" target="_blank"> Louis Pilfold</a> and
+                <a href="https://github.com/lpil/rustexp/graphs/contributors" target="_blank">contributors</a>.
+            </p>
+            <p>
+                Copyright © 2018 - 2023
+                <a href="https://github.com/lpil/rustexp/graphs/contributors" target="_blank">the contributors</a>.
+            </p>
+        </footer>
+    
+
+<script type="module">import init from '/rustexp-4d0e7de4566328cb.js';init('/rustexp-4d0e7de4566328cb_bg.wasm');</script></body></html>
