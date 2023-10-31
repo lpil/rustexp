@@ -200,7 +200,7 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_12(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hca9af2e9a98dffc9(arg0, arg1, addHeapObject(arg2));
+    wasm.wasm_bindgen__convert__closures__invoke1_mut__hf137dc39d3cecaf2(arg0, arg1, addHeapObject(arg2));
 }
 
 function handleError(f, args) {
@@ -293,20 +293,20 @@ function getImports() {
         const ret = getObject(arg0).document;
         return isLikeNone(ret) ? 0 : addHeapObject(ret);
     };
-    imports.wbg.__wbg_instanceof_HtmlTextAreaElement_4bc39f9d861a6832 = function(arg0) {
+    imports.wbg.__wbg_instanceof_HtmlElement_9e442d53bb553421 = function(arg0) {
         let result;
         try {
-            result = getObject(arg0) instanceof HTMLTextAreaElement;
+            result = getObject(arg0) instanceof HTMLElement;
         } catch {
             result = false;
         }
         const ret = result;
         return ret;
     };
-    imports.wbg.__wbg_instanceof_HtmlElement_9e442d53bb553421 = function(arg0) {
+    imports.wbg.__wbg_instanceof_HtmlTextAreaElement_4bc39f9d861a6832 = function(arg0) {
         let result;
         try {
-            result = getObject(arg0) instanceof HTMLElement;
+            result = getObject(arg0) instanceof HTMLTextAreaElement;
         } catch {
             result = false;
         }
@@ -362,8 +362,8 @@ function getImports() {
         getInt32Memory0()[arg0 / 4 + 1] = len0;
         getInt32Memory0()[arg0 / 4 + 0] = ptr0;
     };
-    imports.wbg.__wbindgen_closure_wrapper44 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 57, __wbg_adapter_12);
+    imports.wbg.__wbindgen_closure_wrapper46 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 90, __wbg_adapter_12);
         return addHeapObject(ret);
     };
 
@@ -400,7 +400,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('rustexp-4d0e7de4566328cb_bg.wasm', import.meta.url);
+        input = new URL('rustexp-bd899de2fec235bc_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
