@@ -90,7 +90,6 @@
 #![deny(semicolon_in_expressions_from_macros)]
 #![deny(special_module_name)]
 #![deny(stable_features)]
-#![deny(suspicious_auto_trait_impls)]
 #![deny(temporary_cstring_as_ptr)]
 #![deny(trivial_bounds)]
 #![deny(type_alias_bounds)]
@@ -123,7 +122,6 @@
 #![deny(unused_unsafe)]
 #![deny(unused_variables)]
 #![deny(warnings)]
-#![deny(where_clauses_object_safety)]
 #![deny(while_true)]
 //
 // And also every clippy lint
