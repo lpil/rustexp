@@ -33,7 +33,7 @@
 #![deny(unused_macro_rules)]
 #![deny(unused_qualifications)]
 #![deny(unused_results)]
-#![deny(unused_tuple_struct_fields)]
+#![deny(dead_code)]
 #![deny(variant_size_differences)]
 #![deny(anonymous_parameters)]
 #![deny(array_into_iter)]
